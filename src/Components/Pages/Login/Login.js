@@ -15,7 +15,7 @@ function Login() {
       localStorage.setItem('authToken', 'your-token-here');
 
       Swal.fire({
-        title: 'Login Successful!',
+        title: 'Login Successfully!',
         icon: 'success',
         timer: 1500,
         showConfirmButton: false,
@@ -45,6 +45,7 @@ function Login() {
             <input
               type="email"
               id="email"
+              placeholder='Enter Your Email'
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -56,6 +57,7 @@ function Login() {
             <input
               type="password"
               id="password"
+              placeholder='Enter Your Password'
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

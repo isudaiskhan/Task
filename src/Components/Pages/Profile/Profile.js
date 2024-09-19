@@ -7,15 +7,28 @@ function Profile() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-
     Swal.fire({
-      title: 'Logged out!',
-      icon: 'success',
-      timer: 1500,
-      showConfirmButton: false,
-    }).then(() => {
-      navigate('/login');
+      title: "Are you sure?",
+      text: "You want to Log out!",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log out!",
+      cancelButtonText: "No, stay logged in"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Log out the user
+        localStorage.removeItem('authToken');  // Clear the authentication token
+        navigate('/login');  // Navigate to the login page
+        
+        Swal.fire({
+          title: 'You have been Logged out!',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
     });
   };
 

@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { AiOutlineClose } from "react-icons/ai";
 import { IoMdMenu } from "react-icons/io";
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // State for login status
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
       setHasScrolled(window.scrollY > 10);
     };
+
+    // Check if user is authenticated (i.e., authToken exists)
+    const token = localStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
 
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -20,12 +27,44 @@ const Navbar = () => {
     };
   }, []);
 
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to Log out!",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log out!",
+      cancelButtonText: "No, stay logged in"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Log out user
+        localStorage.removeItem('authToken');
+        setIsAuthenticated(false);
+        navigate('/login');
+  
+     Swal.fire({
+      title: 'You have been Logged out!',
+      icon: 'success',
+      timer: 1500,
+      showConfirmButton: false,
+        });
+      }
+    });
+  };
+  
+  
+
   const navItems = [
     { id: 'home', label: 'Home', link: '/' },
     { id: 'about', label: 'About', link: '/about' },
     { id: 'profile', label: 'Profile', link: '/profile' },
-    { id: 'login', label: 'Login', link: '/login' },
-    { id: 'contact', label: 'Contact', link: '/contact' }
+    { id: 'contact', label: 'Contact', link: '/contact' },
+
+    isAuthenticated
+      ? { id: 'logout', label: 'Logout', link: '/', action: handleLogout } 
+      : { id: 'login', label: 'Login', link: '/login' },
   ];
 
   const toggleMobileMenu = () => {
@@ -46,17 +85,25 @@ const Navbar = () => {
               <ul className="flex items-center space-x-10">
                 {navItems.map((item) => (
                   <li key={item.id}>
-                    <NavLink
-                      to={item.link}
-                      className="text-lg text-white hover:text-red-700"
-                      activeclassname="text-green-500"
-                    >
-                      {item.label}
-                    </NavLink>
+                    {item.id === 'logout' ? (
+                      <button
+                        onClick={item.action}
+                        className="text-lg text-white hover:text-red-700"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <NavLink
+                        to={item.link}
+                        className="text-lg text-white hover:text-red-700"
+                        activeclassname="text-green-500"
+                      >
+                        {item.label}
+                      </NavLink>
+                    )}
                   </li>
                 ))}
               </ul>
-        
             </div>
             <button className="lg:hidden text-white" onClick={toggleMobileMenu}>
               {mobileMenu ? <AiOutlineClose size={28} /> : <IoMdMenu size={28} />}
@@ -78,13 +125,25 @@ const Navbar = () => {
             <ul className="mt-8 space-y-4">
               {navItems.map((item) => (
                 <li key={item.id}>
-                  <NavLink
-                    to={item.link}
-                    className="text-black text-lg font-semibold hover:text-green-600"
-                    onClick={closeMobileMenu}
-                  >
-                    {item.label}
-                  </NavLink>
+                  {item.id === 'logout' ? (
+                    <button
+                      onClick={() => {
+                        item.action();
+                        closeMobileMenu();
+                      }}
+                      className="text-black text-lg font-semibold hover:text-green-600"
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <NavLink
+                      to={item.link}
+                      className="text-black text-lg font-semibold hover:text-green-600"
+                      onClick={closeMobileMenu}
+                    >
+                      {item.label}
+                    </NavLink>
+                  )}
                 </li>
               ))}
             </ul>
