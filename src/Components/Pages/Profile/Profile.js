@@ -19,8 +19,8 @@ function Profile() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Log out the user
-        localStorage.removeItem('authToken');  // Clear the authentication token
-        navigate('/login');  // Navigate to the login page
+        localStorage.removeItem('authToken');
+        navigate('/login');
         
         Swal.fire({
           title: 'You have been Logged out!',
